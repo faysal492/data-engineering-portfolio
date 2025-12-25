@@ -1,0 +1,126 @@
+# Modern ELT Warehouse - .gitignore
+
+# ===== Python =====
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env/
+.env
+
+# ===== dbt =====
+target/
+dbt_packages/
+dbt_modules/
+logs/
+.user.yml
+
+# dbt Cloud
+.dbt/
+
+# ===== Great Expectations =====
+great_expectations/uncommitted/
+great_expectations/checkpoints/
+great_expectations/expectations/.ge_store_backend_id
+
+# ===== Google Cloud Platform =====
+# Service account keys (NEVER commit these!)
+*.json
+!package.json
+!package-lock.json
+!dbt_project.json
+
+# GCP credentials
+.gcp/
+credentials/
+service-account*.json
+*-credentials.json
+
+# ===== IDE & Editors =====
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# ===== macOS =====
+.DS_Store
+*.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# ===== Data Files =====
+# Raw data (download from Kaggle)
+data/raw/*.csv
+data/raw/*.zip
+data/processed/
+
+# Profiling reports
+reports/*.html
+reports/*.json
+
+# ===== Jupyter =====
+.ipynb_checkpoints/
+*.ipynb
+
+# ===== Logs & Temp =====
+*.log
+*.tmp
+*.temp
+.cache/
+
+# ===== Environment Variables =====
+.env
+.env.local
+.env.*.local
+*.env
+
+# ===== Markdown Files =====
+# Ignore all markdown files except README.md
+*.md
+!README.md
+!dbt_project/README.md
+!terraform/README.md
+
+# ===== Terraform =====
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfplan
+terraform/.terraform.lock.hcl
+
+# ===== CI/CD Artifacts =====
+artifacts/
+coverage/
+.coverage
+htmlcov/
+
+# ===== Kaggle =====
+kaggle.json
+.kaggle/

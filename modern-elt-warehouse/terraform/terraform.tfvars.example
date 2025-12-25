@@ -1,0 +1,26 @@
+# Example Terraform Variables File
+# =================================
+# Copy this file to terraform.tfvars and update with your values
+# DO NOT commit terraform.tfvars to git (it contains sensitive information)
+
+# Your GCP Project ID (must already be created)
+gcp_project_id = "your-gcp-project-id"
+
+# GCP Region (must support both GCS and BigQuery)
+gcp_region = "us-central1"
+
+# BigQuery location (US, EU, asia-southeast1, etc.)
+bq_location = "US"
+
+# Enable monthly budget alerts
+enable_billing_alert = true
+
+# Monthly budget in USD (for alert thresholds)
+monthly_budget_usd = 1.0
+
+# Billing Account ID (required if enable_billing_alert is true)
+# Find it at: https://console.cloud.google.com/billing
+billing_account_id = "01A2B3-C4D5E6-F7G8H9"
+
+# Environment (development, staging, production)
+environment = "production"

@@ -1,0 +1,40 @@
+# Modern ELT Warehouse - Python Dependencies
+# ============================================
+
+# Core Data Processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# dbt for transformations
+dbt-core>=1.7.0
+dbt-bigquery>=1.7.0
+
+# Google Cloud Platform
+google-cloud-storage>=2.10.0
+google-cloud-bigquery>=3.11.0
+google-auth>=2.22.0
+
+# Kaggle API for data acquisition
+kaggle>=1.5.16
+
+# Data Quality
+great-expectations>=0.18.0
+
+# Data Profiling
+ydata-profiling>=4.5.0
+
+# Utilities
+python-dotenv>=1.0.0
+click>=8.1.0
+rich>=13.5.0
+tqdm>=4.66.0
+
+# Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+
+# Development
+black>=23.9.0
+flake8>=6.1.0
+isort>=5.12.0
+pre-commit>=3.4.0

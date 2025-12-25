@@ -1,0 +1,49 @@
+# dbt Profile Configuration
+# ===========================
+# This file configures dbt connections for local development and production.
+# Place this file in ~/.dbt/profiles.yml OR keep it in the project root.
+
+# IMPORTANT: Update the 'project' field with your actual GCP project ID
+# before running dbt commands.
+
+brazilian_ecommerce:
+  target: dev
+  outputs:
+    # Development environment - for local testing
+    dev:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('GCP_PROJECT_ID', 'your-gcp-project-id') }}"
+      dataset: olist_dev
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1
+      # Service account key file - update path or use env var
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS', 'credentials/service-account.json') }}"
+
+    # Production environment - for scheduled runs
+    prod:
+      type: bigquery
+      method: service-account
+      project: "{{ env_var('GCP_PROJECT_ID', 'your-gcp-project-id') }}"
+      dataset: olist_prod
+      threads: 4
+      timeout_seconds: 600
+      location: US
+      priority: batch
+      retries: 3
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS', 'credentials/service-account.json') }}"
+
+    # CI environment - for GitHub Actions
+    ci:
+      type: bigquery
+      method: oauth
+      project: "{{ env_var('GCP_PROJECT_ID') }}"
+      dataset: olist_ci
+      threads: 4
+      timeout_seconds: 300
+      location: US
+      priority: interactive
+      retries: 1

@@ -1,0 +1,20 @@
+# Terraform Local State (gitignored)
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfplan
+
+# Terraform variable files with secrets (gitignored)
+terraform.tfvars
+terraform.auto.tfvars
+*.tfvars.json
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store

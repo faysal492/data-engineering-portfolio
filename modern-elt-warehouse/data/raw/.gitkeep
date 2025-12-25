@@ -1,0 +1,6 @@
+# Placeholder for raw data
+# Data files are downloaded from Kaggle and stored here
+# These files are gitignored
+
+# To download data:
+# python scripts/data_acquisition.py

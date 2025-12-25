@@ -1,0 +1,233 @@
+# dbt Source Definitions
+# =====================
+# These define the raw data sources loaded from GCS into BigQuery
+
+version: 2
+
+sources:
+  - name: olist
+    description: "Raw Brazilian E-Commerce (Olist) dataset from Kaggle"
+    schema: olist_bronze
+    tables:
+      - name: orders
+        description: "Order header information - one row per order"
+        columns:
+          - name: order_id
+            description: "Unique order identifier"
+            tests:
+              - unique
+              - not_null
+          - name: customer_id
+            description: "Reference to customer"
+            tests:
+              - not_null
+          - name: order_status
+            description: "Current status of order"
+            tests:
+              - accepted_values:
+                  values: ["delivered", "shipped", "canceled", "unavailable", "invoiced", "processing", "created", "approved"]
+          - name: order_purchase_timestamp
+            description: "Order purchase timestamp (BRT timezone)"
+            tests:
+              - not_null
+          - name: order_approved_at
+            description: "Payment approval timestamp"
+          - name: order_delivered_carrier_date
+            description: "Carrier pickup date"
+          - name: order_delivered_customer_date
+            description: "Customer delivery date"
+          - name: order_estimated_delivery_date
+            description: "Estimated delivery date"
+            tests:
+              - not_null
+
+      - name: order_items
+        description: "Order line items - multiple items per order"
+        columns:
+          - name: order_id
+            description: "Reference to order"
+            tests:
+              - not_null
+          - name: order_item_id
+            description: "Sequential item number within order"
+            tests:
+              - not_null
+          - name: product_id
+            description: "Reference to product"
+            tests:
+              - not_null
+          - name: seller_id
+            description: "Reference to seller"
+            tests:
+              - not_null
+          - name: shipping_limit_date
+            description: "Seller shipping deadline"
+            tests:
+              - not_null
+          - name: price
+            description: "Item price in BRL"
+            tests:
+              - not_null
+          - name: freight_value
+            description: "Freight cost in BRL"
+            tests:
+              - not_null
+
+      - name: customers
+        description: "Customer demographic information"
+        columns:
+          - name: customer_id
+            description: "Unique customer identifier in this dataset"
+            tests:
+              - unique
+              - not_null
+          - name: customer_unique_id
+            description: "Unique customer identifier (may have multiple customer_ids)"
+          - name: customer_zip_code_prefix
+            description: "First 5 digits of customer zip code"
+            tests:
+              - not_null
+          - name: customer_city
+            description: "Customer city name"
+            tests:
+              - not_null
+          - name: customer_state
+            description: "Customer state code (2 characters)"
+            tests:
+              - not_null
+
+      - name: sellers
+        description: "Seller information"
+        columns:
+          - name: seller_id
+            description: "Unique seller identifier"
+            tests:
+              - unique
+              - not_null
+          - name: seller_zip_code_prefix
+            description: "First 5 digits of seller zip code"
+            tests:
+              - not_null
+          - name: seller_city
+            description: "Seller city name"
+            tests:
+              - not_null
+          - name: seller_state
+            description: "Seller state code (2 characters)"
+            tests:
+              - not_null
+
+      - name: products
+        description: "Product catalog"
+        columns:
+          - name: product_id
+            description: "Unique product identifier"
+            tests:
+              - unique
+              - not_null
+          - name: product_category_name
+            description: "Product category in Portuguese"
+          - name: product_name_lenght
+            description: "Length of product name"
+          - name: product_description_lenght
+            description: "Length of product description"
+          - name: product_photos_qty
+            description: "Number of product photos"
+          - name: product_weight_g
+            description: "Weight in grams"
+          - name: product_length_cm
+            description: "Length in centimeters"
+          - name: product_height_cm
+            description: "Height in centimeters"
+          - name: product_width_cm
+            description: "Width in centimeters"
+
+      - name: order_payments
+        description: "Payment information per order"
+        columns:
+          - name: order_id
+            description: "Reference to order"
+            tests:
+              - not_null
+          - name: payment_sequential
+            description: "Sequential payment number"
+            tests:
+              - not_null
+          - name: payment_type
+            description: "Payment method type"
+            tests:
+              - accepted_values:
+                  values: ["credit_card", "boleto", "voucher", "debit_card", "not_defined"]
+          - name: payment_installments
+            description: "Number of installments"
+            tests:
+              - not_null
+          - name: payment_value
+            description: "Payment amount in BRL"
+            tests:
+              - not_null
+
+      - name: order_reviews
+        description: "Customer reviews for orders"
+        columns:
+          - name: review_id
+            description: "Unique review identifier"
+            tests:
+              - unique
+              - not_null
+          - name: order_id
+            description: "Reference to order"
+            tests:
+              - not_null
+          - name: review_score
+            description: "Review rating (1-5)"
+            tests:
+              - accepted_values:
+                  values: [1, 2, 3, 4, 5]
+          - name: review_comment_title
+            description: "Review title"
+          - name: review_comment_message
+            description: "Review message"
+          - name: review_creation_date
+            description: "Review creation timestamp"
+            tests:
+              - not_null
+          - name: review_answer_timestamp
+            description: "Seller response timestamp"
+
+      - name: geolocation
+        description: "Brazilian zip code geolocation data"
+        columns:
+          - name: geolocation_zip_code_prefix
+            description: "Zip code prefix"
+            tests:
+              - not_null
+          - name: geolocation_lat
+            description: "Latitude"
+            tests:
+              - not_null
+          - name: geolocation_lng
+            description: "Longitude"
+            tests:
+              - not_null
+          - name: geolocation_city
+            description: "City name"
+            tests:
+              - not_null
+          - name: geolocation_state
+            description: "State code"
+            tests:
+              - not_null
+
+      - name: product_category_name_translation
+        description: "Translation of product categories from Portuguese to English"
+        columns:
+          - name: product_category_name
+            description: "Category name in Portuguese"
+            tests:
+              - unique
+              - not_null
+          - name: product_category_name_english
+            description: "Category name in English"
+            tests:
+              - not_null
