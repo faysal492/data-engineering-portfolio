@@ -313,3 +313,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <p align="center">
   <i>Built with ❤️ for the data engineering community</i>
 </p>
+✅ CI/CD Pipeline: GitHub Actions workflows configured
