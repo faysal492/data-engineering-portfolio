@@ -37,6 +37,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r modern-elt-warehouse/requirements.txt
 
+      - name: Set up dbt profiles directory
+        run: mkdir -p ~/.dbt
+
       - name: Set up GCP credentials
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
@@ -73,6 +76,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r modern-elt-warehouse/requirements.txt
+
+      - name: Set up dbt profiles directory
+        run: mkdir -p ~/.dbt
 
       - name: Set up GCP credentials
         env:
@@ -111,6 +117,9 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r modern-elt-warehouse/requirements.txt
+
+      - name: Set up dbt profiles directory
+        run: mkdir -p ~/.dbt
 
       - name: Set up GCP credentials
         env:
