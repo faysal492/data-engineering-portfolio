@@ -40,6 +40,9 @@ jobs:
       - name: Set up dbt profiles directory
         run: mkdir -p ~/.dbt
 
+      - name: Copy dbt profiles
+        run: cp modern-elt-warehouse/profiles.yml ~/.dbt/profiles.yml
+
       - name: Set up GCP credentials
         env:
           GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
@@ -79,6 +82,9 @@ jobs:
 
       - name: Set up dbt profiles directory
         run: mkdir -p ~/.dbt
+
+      - name: Copy dbt profiles
+        run: cp modern-elt-warehouse/profiles.yml ~/.dbt/profiles.yml
 
       - name: Set up GCP credentials
         env:
@@ -120,6 +126,9 @@ jobs:
 
       - name: Set up dbt profiles directory
         run: mkdir -p ~/.dbt
+
+      - name: Copy dbt profiles
+        run: cp modern-elt-warehouse/profiles.yml ~/.dbt/profiles.yml
 
       - name: Set up GCP credentials
         env:
