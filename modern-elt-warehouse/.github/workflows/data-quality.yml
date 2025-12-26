@@ -1,0 +1,110 @@
+name: Data Quality Checks
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+env:
+  PYTHON_VERSION: '3.11'
+
+jobs:
+  data-quality:
+    name: Run Data Quality Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r modern-elt-warehouse/requirements.txt
+
+      - name: Set up GCP credentials
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          mkdir -p ~/.config/gcloud
+          echo "$GCP_SA_KEY" > ~/.config/gcloud/service-account-key.json
+          export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json
+
+      - name: Run Data Profiler
+        working-directory: modern-elt-warehouse/scripts
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+        run: python data_profiler.py
+
+      - name: Check Data Quality Report
+        run: |
+          if [ -f "modern-elt-warehouse/reports/DATA_QUALITY_REPORT.md" ]; then
+            echo "✅ Data quality report generated"
+            cat modern-elt-warehouse/reports/DATA_QUALITY_REPORT.md
+          else
+            echo "❌ Data quality report not found"
+            exit 1
+          fi
+
+      - name: Upload Quality Report
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: quality-reports
+          path: modern-elt-warehouse/reports/
+          retention-days: 90
+
+  schema-validation:
+    name: Validate BigQuery Schemas
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-cloud-bigquery
+
+      - name: Validate Schemas
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
+          GCP_PROJECT: modern-elt-warehouse
+        run: |
+          python << 'EOF'
+          from google.cloud import bigquery
+          import os
+          
+          client = bigquery.Client(project=os.environ['GCP_PROJECT'])
+          
+          # Check gold layer tables exist
+          tables_to_check = [
+              'olist_gold.fct_orders',
+              'olist_gold.dim_customers',
+              'olist_gold.dim_products',
+              'olist_gold.dim_sellers'
+          ]
+          
+          for table_id in tables_to_check:
+              try:
+                  table = client.get_table(table_id)
+                  print(f"✅ {table_id}: {table.num_rows} rows")
+              except Exception as e:
+                  print(f"❌ {table_id}: {str(e)}")
+                  exit(1)
+          
+          print("\n✅ All schema validations passed")
+          EOF
