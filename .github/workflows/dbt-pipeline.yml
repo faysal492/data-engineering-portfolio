@@ -37,14 +37,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install dbt-core==${{ env.DBT_VERSION }} dbt-bigquery==${{ env.DBT_VERSION }}
 
+      - name: Set up GCP credentials
+        env:
+          GCP_SA_KEY: ${{ secrets.GCP_SA_KEY }}
+        run: |
+          mkdir -p ~/.config/gcloud
+          echo "$GCP_SA_KEY" > ~/.config/gcloud/service-account-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json" >> $GITHUB_ENV
+
       - name: dbt Parse
         working-directory: modern-elt-warehouse/dbt_project
         run: dbt parse
 
       - name: dbt Debug
         working-directory: modern-elt-warehouse/dbt_project
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: dbt debug
 
   dbt-test:
@@ -74,18 +80,14 @@ jobs:
         run: |
           mkdir -p ~/.config/gcloud
           echo "$GCP_SA_KEY" > ~/.config/gcloud/service-account-key.json
-          export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json" >> $GITHUB_ENV
 
       - name: dbt Test (Staging Models)
         working-directory: modern-elt-warehouse/dbt_project
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: dbt test --select staging --fail-fast
 
       - name: dbt Test (All Models)
         working-directory: modern-elt-warehouse/dbt_project
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         continue-on-error: true
         run: dbt test
 
@@ -116,20 +118,16 @@ jobs:
         run: |
           mkdir -p ~/.config/gcloud
           echo "$GCP_SA_KEY" > ~/.config/gcloud/service-account-key.json
-          export GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=~/.config/gcloud/service-account-key.json" >> $GITHUB_ENV
 
       - name: dbt Run (Dev)
         if: github.ref != 'refs/heads/main'
         working-directory: modern-elt-warehouse/dbt_project
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: dbt run --target dev
 
       - name: dbt Run (Prod)
         if: github.ref == 'refs/heads/main'
         working-directory: modern-elt-warehouse/dbt_project
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GCP_SA_KEY }}
         run: dbt run --target prod
 
       - name: Generate dbt Docs
