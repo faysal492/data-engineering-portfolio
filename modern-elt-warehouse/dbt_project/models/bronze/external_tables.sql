@@ -21,7 +21,7 @@
             CREATE OR REPLACE EXTERNAL TABLE `{{ target.project }}.olist_bronze.{{ table_name }}`
             OPTIONS (
               format = 'CSV',
-              uris = ['gs://{{ var('gcs_raw_bucket') }}/olist/{{ table_name }}/year=*/month=*/day=*/*.csv'],
+              uris = ['gs://{{ var('gcs_raw_bucket') }}/olist/{{ table_name }}/*.csv'],
               skip_leading_rows = 1,
               allow_jagged_rows = true,
               allow_quoted_newlines = true
