@@ -26,6 +26,11 @@ vars:
   gcs_raw_bucket: "{{ env_var('GCP_PROJECT_ID') }}-raw-zone"
 
 
+# Hooks - Run macros at specific lifecycle events
+on-run-start:
+  - "{{ create_external_tables() }}"
+
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 

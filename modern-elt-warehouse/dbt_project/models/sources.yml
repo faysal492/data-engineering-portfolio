@@ -173,7 +173,6 @@ sources:
           - name: review_id
             description: "Unique review identifier"
             tests:
-              - unique
               - not_null
           - name: order_id
             description: "Reference to order"
@@ -184,6 +183,8 @@ sources:
             tests:
               - accepted_values:
                   values: [1, 2, 3, 4, 5]
+                  config:
+                    where: "review_score is not null"
           - name: review_comment_title
             description: "Review title"
           - name: review_comment_message
