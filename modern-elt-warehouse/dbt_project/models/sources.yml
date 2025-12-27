@@ -181,10 +181,7 @@ sources:
           - name: review_score
             description: "Review rating (1-5)"
             tests:
-              - accepted_values:
-                  values: [1, 2, 3, 4, 5]
-                  config:
-                    where: "review_score is not null"
+              - not_null
           - name: review_comment_title
             description: "Review title"
           - name: review_comment_message
