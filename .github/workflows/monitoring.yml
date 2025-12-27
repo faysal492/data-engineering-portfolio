@@ -78,13 +78,14 @@ jobs:
         run: |
           python << 'EOF'
           import json
+          import os
           from google.cloud import bigquery
           from google.oauth2 import service_account
           
-          # Load credentials
-          sa_key = json.loads('''${{ secrets.GCP_SA_KEY }}''')
+          # Load credentials from environment variable
+          sa_key = json.loads(os.environ.get('GCP_SA_KEY', '{}'))
           credentials = service_account.Credentials.from_service_account_info(sa_key)
-          client = bigquery.Client(credentials=credentials, project='${{ env.GCP_PROJECT_ID }}')
+          client = bigquery.Client(credentials=credentials, project=os.environ.get('GCP_PROJECT_ID'))
           
           # Check datasets
           datasets = ['olist_bronze', 'olist_silver', 'olist_gold', 'olist_dev']
@@ -122,13 +123,14 @@ jobs:
         run: |
           python << 'EOF'
           import json
+          import os
           from google.cloud import storage
           from google.oauth2 import service_account
           
-          # Load credentials
-          sa_key = json.loads('''${{ secrets.GCP_SA_KEY }}''')
+          # Load credentials from environment variable
+          sa_key = json.loads(os.environ.get('GCP_SA_KEY', '{}'))
           credentials = service_account.Credentials.from_service_account_info(sa_key)
-          client = storage.Client(credentials=credentials, project='${{ vars.GCP_PROJECT_ID }}')
+          client = storage.Client(credentials=credentials, project=os.environ.get('GCP_PROJECT_ID'))
           
           # Check buckets
           buckets = [
