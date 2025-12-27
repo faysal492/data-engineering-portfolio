@@ -21,6 +21,11 @@ clean-targets:         # directories to be removed by `dbt clean`
   - "dbt_packages"
 
 
+# Project Variables
+vars:
+  gcs_raw_bucket: "{{ env_var('GCP_PROJECT_ID') }}-raw-zone"
+
+
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
 
